@@ -1,0 +1,101 @@
+
+#ifndef BLUR_RADIUS
+#define BLUR_RADIUS 5
+#endif
+
+Texture2D inputTexture: register(t0);
+RWTexture2D<float4> outputTexture: register(u0);
+
+#if BLUR_RADIUS == 3
+
+    static const float weights[4] =
+    {
+        0.39905028,
+        0.24203623,
+        0.05400558,
+        0.00443305
+    };
+
+#elif BLUR_RADIUS == 5
+
+    static const float weights[6] =
+    {
+        0.22702703,
+        0.19459459,
+        0.12162162,
+        0.05405405,
+        0.01621622,
+        0.00316228
+    };
+
+#elif BLUR_RADIUS == 7
+
+    static const float weights[8] =
+    {
+        0.15957691,
+        0.14730806,
+        0.10777865,
+        0.07427257,
+        0.03645783,
+        0.01621622,
+        0.00687262,
+        0.00284900
+    };
+
+#elif BLUR_RADIUS == 9
+
+    static const float weights[10] =
+    {
+        0.13298076,
+        0.12581549,
+        0.10663900,
+        0.08628024,
+        0.06168930,
+        0.04018631,
+        0.02386418,
+        0.01285158,
+        0.00622915,
+        0.00268472
+    };
+
+#else
+
+#error "BLUR_RADIUS must be 3, 5, 7, or 9"
+
+#endif
+
+
+cbuffer BlurConstants: register(b0)
+{
+    int direction;
+    int3 padding;
+}
+
+
+[numthreads(8, 8, 1)]
+void main(uint3 DTid : SV_DispatchThreadID)
+{
+    uint2 pixel = DTid.xy;
+
+    if (pixel.x >= 1920 || pixel.y >= 1080)
+        return;
+
+    uint2 dir;
+    if (direction == 0)
+        dir = float2(1.0, 0.0);
+    else
+        dir = float2(0.0, 1.0);
+
+    float3 color = inputTexture[pixel].rgb * weights[0];
+
+    [unroll]
+    for (int i = 1; i < BLUR_RADIUS; i++)
+    {
+        int2 offset = int2(dir * i);
+
+        color += inputTexture[pixel + offset].rgb * weights[i];
+        color += inputTexture[pixel - offset].rgb * weights[i];
+    }
+
+    outputTexture[pixel] = float4(color, 1.0);
+}

@@ -1,0 +1,28 @@
+
+/.vs
+/Cookbooks
+/Debug Pictures
+ClassDiagram.puml
+Project/.ipynb_checkpoints/QuadTreeViz-checkpoint.ipynb
+*.ipynb
+*.swatch
+/Project/res/Textures/.mayaSwatches
+/Project/x64
+/x64
+Project_3D1_DV1542_HT23VT24.pdf
+Project/FrustumDebugging/BoundingBoxes.csv
+Project/imgui.ini
+*.cso
+/Project/res/temp
+Project/tracy-profiler.exe.lnk
+
+
+# Large files
+Project/res/ObjectFiles/lucy.ply
+Project/res/ObjectFiles/sponza_*.glb
+tracy-profiler.exe.lnk
+Project/Data.json
+/Project/data
+/Project/res/Shaders/disassembly/StaticAnalysis
+/Project/docs/*
+!/Project/docs/Screenshot.png
